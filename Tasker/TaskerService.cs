@@ -9,17 +9,13 @@ namespace Tasker
         {
             using (TaskerContext db = new TaskerContext())
             {
-                var tasks = db.Tasks;
-                foreach (Task t in tasks)
-                {
-                    
-                }
+                
             }
         }
 
         public void Stop()
         {
-
+            Console.WriteLine("Tasker Service is closed!");
         }
     }
 }
