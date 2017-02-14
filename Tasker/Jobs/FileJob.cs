@@ -35,7 +35,7 @@ namespace Tasker.Jobs
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e.Message);
+                        Logger.Trace(e.StackTrace);
                         return false;
                     }
 

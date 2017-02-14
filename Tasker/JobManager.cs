@@ -43,12 +43,12 @@ namespace Tasker
             if (job.Run())
             {
                 statusText = "Completed";
-                Console.WriteLine($"Task with TaskId: {job.TaskId} is completed!");
+                Logger.Info($"Task with TaskId: {job.TaskId} is completed!");
             }
             else
             {
                 statusText = "Failed";
-                Console.WriteLine($"Task with TaskId: {job.TaskId} is failed!");
+                Logger.Info($"Task with TaskId: {job.TaskId} is failed!");
             }
 
             using (TaskerContext db = new TaskerContext())
