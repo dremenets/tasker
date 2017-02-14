@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
-using Newtonsoft.Json;
 using Tasker.DB;
 using Tasker.Jobs;
 
@@ -25,7 +24,7 @@ namespace Tasker
                                                 && (x.Status != "Scheduled" || x.Status != "Completed"));
                 foreach (var task in tasks)
                 {
-                    var job = CreateJob(task);
+                    var job = JobFactory.CreateJob(task);
                     task.Status = "Scheduled";
                     var interval = task.ExpectedStart.Subtract(DateTime.Now);
                     var timer = new Timer(interval.TotalMilliseconds);
@@ -50,30 +49,6 @@ namespace Tasker
 
                 db.SaveChanges();
             }
-        }
-
-        private Job CreateJob(Task task)
-        {
-            Job job;
-            switch (task.Type)
-            {
-                case "File":
-                {
-                    job = new FileJob(task.Params) {TaskId = task.Id};
-                    break;
-                }
-                default:
-                {
-                    var emailSettings = JsonConvert.DeserializeObject<EmailSettings>(task.Params);
-                    job = new EmailJob(emailSettings.EmailAddress, emailSettings.Subject, emailSettings.Message)
-                    {
-                        TaskId = task.Id
-                    };
-                    break;
-                }
-            }
-
-            return job;
         }
     }
 }

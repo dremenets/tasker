@@ -65,6 +65,7 @@
     <Compile Include="DB\DbContext.cs" />
     <Compile Include="DB\EmailSettings.cs" />
     <Compile Include="DB\Task.cs" />
+    <Compile Include="JobFactory.cs" />
     <Compile Include="JobManager.cs" />
     <Compile Include="Jobs\EmailJob.cs" />
     <Compile Include="Jobs\FileJob.cs" />
