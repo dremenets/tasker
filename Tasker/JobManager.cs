@@ -28,18 +28,15 @@ namespace Tasker
         {
             using (TaskerContext db = new TaskerContext())
             {
-                var tasks =
-                    db.Tasks.Where(
-                        x => x.ExpectedStart < DateTime.Now && (x.Status != "Scheduled" || x.Status != "Completed"));
-
+                var tasks = db.Tasks.Where(x => x.ExpectedStart < DateTime.Now
+                                                && (x.Status != "Scheduled" || x.Status != "Completed"));
                 foreach (var task in tasks)
                 {
                     var job = CreateJob(task);
                     task.Status = "Scheduled";
                     var interval = task.ExpectedStart.Subtract(DateTime.Now);
                     var timer = new Timer(interval.TotalMilliseconds);
-                    timer.Elapsed += async (sender, e) => await job.Run();
-
+                    timer.Elapsed +=  (sender, e) => job.Run();
                     _timers.Add(timer);
                 }
 

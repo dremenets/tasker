@@ -34,7 +34,7 @@ namespace Tasker.Jobs
             set { _emailAddress = value; }
         }
 
-        public override Task Run()
+        public override void Run()
         {
             var smtp = ConfigurationManager.AppSettings["smtp"];
             var login = ConfigurationManager.AppSettings["login"];

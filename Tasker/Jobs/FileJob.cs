@@ -13,7 +13,7 @@ namespace Tasker.Jobs
             _fileName = fileName;
         }
 
-        public override Task Run()
+        public override void Run()
         {
             var path = ConfigurationManager.AppSettings["path"];
 
