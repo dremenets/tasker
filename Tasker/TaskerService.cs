@@ -26,7 +26,7 @@ namespace Tasker
 
         public void Stop()
         {
-            Log.Info("Tasker Service is stoped!");
+            Log.Info("Tasker Service is stopped!");
         }
     }
 }
