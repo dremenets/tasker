@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Configuration;
-using System.Threading.Tasks;
+using System.Net;
+using System.Net.Mail;
 
 namespace Tasker.Jobs
 {
-    public class EmailJob: Job
+    public class EmailJob : Job
     {
         private string _message;
         private string _subject;
@@ -17,7 +18,8 @@ namespace Tasker.Jobs
             _emailAddress = emailAddress;
         }
 
-        public string Message {
+        public string Message
+        {
             get { return _message; }
             set { _message = value; }
         }
@@ -37,10 +39,24 @@ namespace Tasker.Jobs
         public override void Run()
         {
             var smtp = ConfigurationManager.AppSettings["smtp"];
-            var login = ConfigurationManager.AppSettings["login"];
+            int smtpPort = 0;
+            Int32.TryParse(ConfigurationManager.AppSettings["smtp_port"], out smtpPort);
             var password = ConfigurationManager.AppSettings["password"];
 
-            throw new NotImplementedException();
+            MailAddress from = new MailAddress("tasker@gmail.com", "Tasker");
+            MailAddress to = new MailAddress(EmailAddress);
+            MailMessage m = new MailMessage(from, to)
+            {
+                Subject = Subject,
+                Body = Message
+            };
+            SmtpClient smtpClient = new SmtpClient(smtp, smtpPort)
+            {
+                Credentials = new NetworkCredential("tasker@gmail.com", password),
+                EnableSsl = true
+            };
+
+            smtpClient.Send(m);
         }
     }
 }
