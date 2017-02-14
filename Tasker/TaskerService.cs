@@ -7,10 +7,8 @@ namespace Tasker
     {
         public void Start()
         {
-            using (TaskerContext db = new TaskerContext())
-            {
-                
-            }
+            var jobManager = new JobManager();
+            jobManager.InitTasks();
         }
 
         public void Stop()
