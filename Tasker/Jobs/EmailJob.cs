@@ -36,7 +36,7 @@ namespace Tasker.Jobs
             set { _emailAddress = value; }
         }
 
-        public override void Run()
+        public override bool Run()
         {
             var smtp = ConfigurationManager.AppSettings["smtp"];
             int smtpPort = 0;
@@ -56,7 +56,16 @@ namespace Tasker.Jobs
                 EnableSsl = true
             };
 
-            smtpClient.Send(m);
+            try
+            {
+                smtpClient.Send(m);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return false;
+            }
+            return true;
         }
     }
 }

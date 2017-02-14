@@ -14,10 +14,10 @@ namespace Tasker.Jobs
             _fileName = fileName;
         }
 
-        public override void Run()
+        public override bool Run()
         {
             // задержка в 10сек.
-            Task.Delay(10000)
+            var task = Task.Delay(10000)
                 .ContinueWith(t =>
                 {
                     var path = ConfigurationManager.AppSettings["path"];
@@ -36,10 +36,13 @@ namespace Tasker.Jobs
                     catch (Exception e)
                     {
                         Console.WriteLine(e.Message);
+                        return false;
                     }
-                    
 
+                    return true;
                 });
+
+            return task.Result;
         }
     }
 }

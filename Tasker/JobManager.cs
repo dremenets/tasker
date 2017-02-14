@@ -39,15 +39,25 @@ namespace Tasker
 
         private void RunJob(Job job)
         {
-            job.Run();
+            string statusText;
+            if (job.Run())
+            {
+                statusText = "Completed";
+                Console.WriteLine($"Task with TaskId: {job.TaskId} is completed!");
+            }
+            else
+            {
+                statusText = "Failed";
+                Console.WriteLine($"Task with TaskId: {job.TaskId} is failed!");
+            }
+
             using (TaskerContext db = new TaskerContext())
             {
                 var task = db.Tasks.FirstOrDefault(x => x.Id == job.TaskId);
                 if (task != null)
                 {
-                    task.Status = "Completed";
+                    task.Status = statusText;
                 }
-
                 db.SaveChanges();
             }
         }
