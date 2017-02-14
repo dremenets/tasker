@@ -10,7 +10,15 @@ namespace Tasker
         public void Start()
         {
             var jobManager = new JobManager();
-            _timer = new Timer(5000) {AutoReset = true};
+            jobManager.InitTasks();
+
+            _timer = new Timer
+            {
+                AutoReset = true,
+                Enabled = true,
+                Interval = 5000
+            };
+            
             _timer.Elapsed += (o, e) => jobManager.InitTasks();
         }
 

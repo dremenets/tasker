@@ -20,14 +20,15 @@ namespace Tasker
         {
             using (TaskerContext db = new TaskerContext())
             {
-                var tasks = db.Tasks.Where(x => x.ExpectedStart < DateTime.Now
-                                                && (x.Status != "Scheduled" || x.Status != "Completed"));
+                var tasks = db.Tasks.Where(x => x.ExpectedStart > DateTime.Now
+                                                && (x.Status != "Scheduled" && x.Status != "Completed"))
+                    .ToList();
                 foreach (var task in tasks)
                 {
                     var job = JobFactory.CreateJob(task);
                     task.Status = "Scheduled";
                     var interval = task.ExpectedStart.Subtract(DateTime.Now);
-                    var timer = new Timer(interval.TotalMilliseconds);
+                    var timer = new Timer(interval.TotalMilliseconds) {Enabled = true};
                     timer.Elapsed += (sender, e) => RunJob(job);
                     _timers.Add(timer);
                 }
