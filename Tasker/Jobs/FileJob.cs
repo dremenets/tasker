@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -21,14 +22,22 @@ namespace Tasker.Jobs
                 {
                     var path = ConfigurationManager.AppSettings["path"];
                     var fullPath = Path.Combine(path, _fileName);
-                    if (File.Exists(fullPath))
+                    try
                     {
-                        File.Delete(fullPath);
-                    }
+                        if (File.Exists(fullPath))
+                        {
+                            File.Delete(fullPath);
+                        }
 
-                    using (File.Create(fullPath))
-                    {
+                        using (File.Create(fullPath))
+                        {
+                        }
                     }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                    
 
                 });
         }
