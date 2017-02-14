@@ -1,10 +1,10 @@
-﻿using System;
-using System.Configuration;
+﻿using System.Configuration;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Tasker.Jobs
 {
-    public class FileJob: Job
+    public class FileJob : Job
     {
         private readonly string _fileName;
 
@@ -15,9 +15,22 @@ namespace Tasker.Jobs
 
         public override void Run()
         {
-            var path = ConfigurationManager.AppSettings["path"];
+            // задержка в 10сек.
+            Task.Delay(10000)
+                .ContinueWith(t =>
+                {
+                    var path = ConfigurationManager.AppSettings["path"];
+                    var fullPath = Path.Combine(path, _fileName);
+                    if (File.Exists(fullPath))
+                    {
+                        File.Delete(fullPath);
+                    }
 
-            throw new NotImplementedException();
+                    using (File.Create(fullPath))
+                    {
+                    }
+
+                });
         }
     }
 }

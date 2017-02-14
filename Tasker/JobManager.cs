@@ -10,17 +10,10 @@ namespace Tasker
 {
     public class JobManager
     {
-       
-        private readonly string _smtpServer;
-        private readonly string _password;
-        private readonly string _login;
-
         private readonly List<Timer> _timers;
 
         public JobManager()
         {
-            // Прочитать настройки
-
             _timers = new List<Timer>();
         }
 
@@ -36,7 +29,7 @@ namespace Tasker
                     task.Status = "Scheduled";
                     var interval = task.ExpectedStart.Subtract(DateTime.Now);
                     var timer = new Timer(interval.TotalMilliseconds);
-                    timer.Elapsed +=  (sender, e) => job.Run();
+                    timer.Elapsed += (sender, e) => RunJob(job);
                     _timers.Add(timer);
                 }
 
@@ -44,6 +37,20 @@ namespace Tasker
             }
         }
 
+        private void RunJob(Job job)
+        {
+            job.Run();
+            using (TaskerContext db = new TaskerContext())
+            {
+                var task = db.Tasks.FirstOrDefault(x => x.Id == job.TaskId);
+                if (task != null)
+                {
+                    task.Status = "Completed";
+                }
+
+                db.SaveChanges();
+            }
+        }
 
         private Job CreateJob(Task task)
         {
@@ -52,13 +59,16 @@ namespace Tasker
             {
                 case "File":
                 {
-                    job = new FileJob(task.Params);
+                    job = new FileJob(task.Params) {TaskId = task.Id};
                     break;
                 }
                 default:
                 {
                     var emailSettings = JsonConvert.DeserializeObject<EmailSettings>(task.Params);
-                    job = new EmailJob(emailSettings.EmailAddress, emailSettings.Subject, emailSettings.Message);
+                    job = new EmailJob(emailSettings.EmailAddress, emailSettings.Subject, emailSettings.Message)
+                    {
+                        TaskId = task.Id
+                    };
                     break;
                 }
             }
