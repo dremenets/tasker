@@ -18,13 +18,15 @@ namespace Tasker
                 Enabled = true,
                 Interval = 5000
             };
-            
+
             _timer.Elapsed += (o, e) => jobManager.InitTasks();
+
+            Log.Info("Tasker Service is started!");
         }
 
         public void Stop()
         {
-            Logger.Info("Tasker Service is stoped!");
+            Log.Info("Tasker Service is stoped!");
         }
     }
 }

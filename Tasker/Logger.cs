@@ -2,9 +2,9 @@
 
 namespace Tasker
 {
-    public class Logger
+    public class Log
     {
-        private static readonly NLog.Logger _logger = LogManager.GetCurrentClassLogger();
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public static void Trace(string message)
         {

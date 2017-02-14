@@ -28,7 +28,7 @@ namespace Tasker
                     var job = JobFactory.CreateJob(task);
                     task.Status = "Scheduled";
                     var interval = task.ExpectedStart.Subtract(DateTime.Now);
-                    var timer = new Timer(interval.TotalMilliseconds) {Enabled = true};
+                    var timer = new Timer(interval.TotalMilliseconds) { AutoReset = false,  Enabled = true};
                     timer.Elapsed += (sender, e) => RunJob(job);
                     _timers.Add(timer);
                 }
@@ -43,12 +43,12 @@ namespace Tasker
             if (job.Run())
             {
                 statusText = "Completed";
-                Logger.Info($"Task with TaskId: {job.TaskId} is completed!");
+                Log.Info($"Task with TaskId: {job.TaskId} is completed!");
             }
             else
             {
                 statusText = "Failed";
-                Logger.Info($"Task with TaskId: {job.TaskId} is failed!");
+                Log.Info($"Task with TaskId: {job.TaskId} is failed!");
             }
 
             using (TaskerContext db = new TaskerContext())
