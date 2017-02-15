@@ -42,8 +42,9 @@ namespace Tasker.Jobs
             int smtpPort = 0;
             Int32.TryParse(ConfigurationManager.AppSettings["smtp_port"], out smtpPort);
             var password = ConfigurationManager.AppSettings["password"];
+            var login = ConfigurationManager.AppSettings["login"];
 
-            MailAddress from = new MailAddress("tasker@gmail.com", "Tasker");
+            MailAddress from = new MailAddress(login);
             MailAddress to = new MailAddress(EmailAddress);
             MailMessage m = new MailMessage(from, to)
             {
@@ -52,7 +53,7 @@ namespace Tasker.Jobs
             };
             SmtpClient smtpClient = new SmtpClient(smtp, smtpPort)
             {
-                Credentials = new NetworkCredential("tasker@gmail.com", password),
+                Credentials = new NetworkCredential(login, password),
                 EnableSsl = true
             };
 
@@ -62,7 +63,7 @@ namespace Tasker.Jobs
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Log.Trace(e.StackTrace);
                 return false;
             }
             return true;
