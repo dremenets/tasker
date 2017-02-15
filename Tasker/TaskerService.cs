@@ -17,6 +17,8 @@ namespace Tasker
 
         public void Start()
         {
+            Log.Info("Tasker Service is started!");
+
             _jobManager.InitTasks();
 
             _timer = new Timer
@@ -27,8 +29,6 @@ namespace Tasker
             };
 
             _timer.Elapsed += (o, e) => _jobManager.InitTasks();
-
-            Log.Info("Tasker Service is started!");
         }
 
         public void Stop()

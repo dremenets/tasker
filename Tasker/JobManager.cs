@@ -27,6 +27,8 @@ namespace Tasker
                 task.Status = Status.Scheduled;
                 _repository.Update(task);
 
+                Log.Info($"Task with TaskId: {job.TaskId} is scheduled!");
+
                 var interval = task.ExpectedStart.Subtract(DateTime.Now);
                 var timer = new Timer(interval.TotalMilliseconds) {AutoReset = false, Enabled = true};
                 timer.Elapsed += (sender, e) => RunJob(job);
