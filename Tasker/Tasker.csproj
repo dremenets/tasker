@@ -68,6 +68,8 @@
     <Compile Include="ConfigureService.cs" />
     <Compile Include="DB\DbContext.cs" />
     <Compile Include="DB\EmailSettings.cs" />
+    <Compile Include="DB\IRepository.cs" />
+    <Compile Include="DB\Status.cs" />
     <Compile Include="DB\Task.cs" />
     <Compile Include="JobFactory.cs" />
     <Compile Include="JobManager.cs" />

@@ -9,57 +9,56 @@ namespace Tasker
 {
     public class JobManager
     {
-        private readonly List<Timer> _timers;
+        private readonly GenericRepository<Task> _repository;
+        private readonly Dictionary<int, Timer> _timers;
 
         public JobManager()
         {
-            _timers = new List<Timer>();
+            _repository = new GenericRepository<Task>(new TaskerContext());
+            _timers = new Dictionary<int, Timer>();
         }
 
         public void InitTasks()
         {
-            using (TaskerContext db = new TaskerContext())
+            var tasks = _repository.Get(x => x.ExpectedStart > DateTime.Now && x.Status == Status.None);
+            foreach (var task in tasks)
             {
-                var tasks = db.Tasks.Where(x => x.ExpectedStart > DateTime.Now
-                                                && (x.Status != "Scheduled" && x.Status != "Completed"))
-                    .ToList();
-                foreach (var task in tasks)
-                {
-                    var job = JobFactory.CreateJob(task);
-                    task.Status = "Scheduled";
-                    var interval = task.ExpectedStart.Subtract(DateTime.Now);
-                    var timer = new Timer(interval.TotalMilliseconds) { AutoReset = false,  Enabled = true};
-                    timer.Elapsed += (sender, e) => RunJob(job);
-                    _timers.Add(timer);
-                }
+                var job = JobFactory.CreateJob(task);
+                task.Status = Status.Scheduled;
+                _repository.Update(task);
 
-                db.SaveChanges();
+                var interval = task.ExpectedStart.Subtract(DateTime.Now);
+                var timer = new Timer(interval.TotalMilliseconds) {AutoReset = false, Enabled = true};
+                timer.Elapsed += (sender, e) => RunJob(job);
+                _timers[task.Id] = timer;
             }
+
+        }
+
+        public List<int> GetActiveTaskIds()
+        {
+            return _timers.Keys.ToList();
         }
 
         private void RunJob(Job job)
         {
-            string statusText;
+            Status status;
             if (job.Run())
             {
-                statusText = "Completed";
+                status = Status.Completed;
                 Log.Info($"Task with TaskId: {job.TaskId} is completed!");
             }
             else
             {
-                statusText = "Failed";
+                status = Status.Failed;
                 Log.Info($"Task with TaskId: {job.TaskId} is failed!");
             }
 
-            using (TaskerContext db = new TaskerContext())
-            {
-                var task = db.Tasks.FirstOrDefault(x => x.Id == job.TaskId);
-                if (task != null)
-                {
-                    task.Status = statusText;
-                }
-                db.SaveChanges();
-            }
+            var task = _repository.FindById(job.TaskId);
+            task.Status = status;
+            _repository.Update(task);
+
+            _timers.Remove(job.TaskId);
         }
     }
 }

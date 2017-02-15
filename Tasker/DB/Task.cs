@@ -8,7 +8,7 @@ namespace Tasker.DB
         public string Name { get; set; }
         public DateTime ExpectedStart { get; set; }
         public string Params { get; set; }
-        public string Status { get; set; }
+        public Status Status { get; set; }
         public string Type { get; set; }
     }
 }

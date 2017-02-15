@@ -12,8 +12,8 @@ CREATE TABLE [dbo].[Tasks] (
     [Id]            INT           NOT NULL,
     [Name]          VARCHAR (50)  NOT NULL,
     [ExpectedStart] DATETIME      NOT NULL,
-    [Params]        VARCHAR (200) NULL,
-    [Status]        VARCHAR (50)  NULL,
+    [Params]        VARCHAR (500) NULL,
+    [Status]        tinyint NOT NULL DEFAULT 0,
     [Type]          VARCHAR (50)  NOT NULL
 );
 

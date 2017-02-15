@@ -1,16 +1,23 @@
-﻿using System;
-using System.Timers;
+﻿using System.Timers;
+using Tasker.DB;
 
 namespace Tasker
 {
     public class TaskerService
     {
         private Timer _timer;
+        private readonly GenericRepository<Task> _repository;
+        private readonly JobManager _jobManager;
+
+        public TaskerService()
+        {
+            _repository = new GenericRepository<Task>(new TaskerContext());
+            _jobManager = new JobManager();
+        }
 
         public void Start()
         {
-            var jobManager = new JobManager();
-            jobManager.InitTasks();
+            _jobManager.InitTasks();
 
             _timer = new Timer
             {
@@ -19,13 +26,20 @@ namespace Tasker
                 Interval = 5000
             };
 
-            _timer.Elapsed += (o, e) => jobManager.InitTasks();
+            _timer.Elapsed += (o, e) => _jobManager.InitTasks();
 
             Log.Info("Tasker Service is started!");
         }
 
         public void Stop()
         {
+            var taskIds = _jobManager.GetActiveTaskIds();
+            foreach (var id in taskIds)
+            {
+                var task = _repository.FindById(id);
+                task.Status = Status.None;
+                _repository.Update(task);
+            }
             Log.Info("Tasker Service is stopped!");
         }
     }
