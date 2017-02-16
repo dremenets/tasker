@@ -1,4 +1,5 @@
 ﻿using System;
+using Tasker.DB.EF;
 
 namespace Tasker.DB
 {

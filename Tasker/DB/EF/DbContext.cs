@@ -1,6 +1,6 @@
 ﻿using System.Data.Entity;
 
-namespace Tasker.DB
+namespace Tasker.DB.EF
 {
     class TaskerContext : DbContext
     {

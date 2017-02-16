@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Tasker.DB;
+using Tasker.DB.EF;
 using Tasker.Jobs;
 using Task = Tasker.DB.Task;
 

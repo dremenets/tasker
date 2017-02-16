@@ -1,5 +1,6 @@
 ﻿using System.Timers;
 using Tasker.DB;
+using Tasker.DB.EF;
 
 namespace Tasker
 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
 using Tasker.DB;
+using Tasker.DB.EF;
 using Tasker.Jobs;
 
 namespace Tasker

@@ -70,10 +70,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigureService.cs" />
-    <Compile Include="DB\DbContext.cs" />
-    <Compile Include="DB\EmailSettings.cs" />
+    <Compile Include="DB\EF\DbContext.cs" />
+    <Compile Include="DB\EF\EFGenericRepository.cs" />
+    <Compile Include="DB\EF\EmailSettings.cs" />
     <Compile Include="DB\IGenericRepository.cs" />
-    <Compile Include="DB\Status.cs" />
+    <Compile Include="DB\EF\Status.cs" />
     <Compile Include="DB\Task.cs" />
     <Compile Include="IJobControl.cs" />
     <Compile Include="JobFactory.cs" />
