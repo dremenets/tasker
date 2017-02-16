@@ -7,7 +7,7 @@ using Tasker.Jobs;
 
 namespace Tasker
 {
-    public class JobManager
+    public class JobManager: IJobControl
     {
         private readonly GenericRepository<Task> _repository;
         private readonly Dictionary<int, Timer> _timers;
@@ -18,7 +18,7 @@ namespace Tasker
             _timers = new Dictionary<int, Timer>();
         }
 
-        public void InitTasks()
+        public void Init()
         {
             var tasks = _repository.Get(x => x.ExpectedStart > DateTime.Now && x.Status == Status.None);
             foreach (var task in tasks)
@@ -37,7 +37,7 @@ namespace Tasker
 
         }
 
-        public List<int> GetActiveTaskIds()
+        public List<int> GetScheduledTaskIds()
         {
             return _timers.Keys.ToList();
         }

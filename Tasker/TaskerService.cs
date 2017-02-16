@@ -6,20 +6,20 @@ namespace Tasker
     public class TaskerService
     {
         private Timer _timer;
-        private readonly GenericRepository<Task> _repository;
-        private readonly JobManager _jobManager;
+        private readonly IGenericRepository<Task> _repository;
+        private readonly IJobControl _jobManager;
 
-        public TaskerService()
+        public TaskerService(IJobControl jobManager, IGenericRepository<Task> repository)
         {
-            _repository = new GenericRepository<Task>(new TaskerContext());
-            _jobManager = new JobManager();
+            _repository = repository;
+            _jobManager = jobManager;
         }
 
         public void Start()
         {
             Log.Info("Tasker Service is started!");
 
-            _jobManager.InitTasks();
+            _jobManager.Init();
 
             _timer = new Timer
             {
@@ -28,12 +28,12 @@ namespace Tasker
                 Interval = 5000
             };
 
-            _timer.Elapsed += (o, e) => _jobManager.InitTasks();
+            _timer.Elapsed += (o, e) => _jobManager.Init();
         }
 
         public void Stop()
         {
-            var taskIds = _jobManager.GetActiveTaskIds();
+            var taskIds = _jobManager.GetScheduledTaskIds();
             foreach (var id in taskIds)
             {
                 var task = _repository.FindById(id);

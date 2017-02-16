@@ -1,4 +1,6 @@
-﻿using Topshelf;
+﻿using Tasker.DB;
+using Topshelf;
+
 namespace Tasker
 {
     internal static class ConfigureService
@@ -9,11 +11,12 @@ namespace Tasker
             {
                 configure.Service<TaskerService>(service =>
                 {
-                    service.ConstructUsing(s => new TaskerService());
+                    service.ConstructUsing(
+                        s => new TaskerService(new JobManager(), new GenericRepository<Task>(new TaskerContext())));
                     service.WhenStarted(s => s.Start());
                     service.WhenStopped(s => s.Stop());
                 });
-                
+
                 configure.RunAsLocalSystem();
                 configure.SetServiceName("Tasker");
                 configure.SetDisplayName("TaskerService");
