@@ -9,12 +9,12 @@ namespace Tasker
 {
     public class JobManager: IJobControl
     {
-        private readonly GenericRepository<Task> _repository;
+        private readonly IGenericRepository<Task> _repository;
         private readonly Dictionary<int, Timer> _timers;
 
-        public JobManager()
+        public JobManager(IGenericRepository<Task> repository)
         {
-            _repository = new GenericRepository<Task>(new TaskerContext());
+            _repository = repository;
             _timers = new Dictionary<int, Timer>();
         }
 
