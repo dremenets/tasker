@@ -1,9 +1,10 @@
-﻿using System;
+﻿using DBLibrary;
+using DBLibrary.Entity;
+using DBLibrary.Entity.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
-using Tasker.DB;
-using Tasker.DB.EF;
 using Tasker.Jobs;
 
 namespace Tasker

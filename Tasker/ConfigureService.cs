@@ -1,6 +1,7 @@
 ﻿using Autofac;
-using Tasker.DB;
-using Tasker.DB.EF;
+using DBLibrary;
+using DBLibrary.EF;
+using DBLibrary.Entity;
 using Topshelf;
 
 namespace Tasker

@@ -1,4 +1,4 @@
-﻿namespace Tasker.DB.EF
+﻿namespace DBLibrary.Entity.Enums
 {
     public enum  Status: byte
     {

@@ -1,6 +1,7 @@
-﻿using System.Timers;
-using Tasker.DB;
-using Tasker.DB.EF;
+﻿using DBLibrary;
+using DBLibrary.Entity;
+using DBLibrary.Entity.Enums;
+using System.Timers;
 
 namespace Tasker
 {

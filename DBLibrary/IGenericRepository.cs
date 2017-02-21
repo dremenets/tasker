@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Tasker.DB
+namespace DBLibrary
 {
     public interface IGenericRepository<TEntity> where TEntity : class
     {

@@ -1,7 +1,7 @@
-﻿using System;
-using Tasker.DB.EF;
+﻿using DBLibrary.Entity.Enums;
+using System;
 
-namespace Tasker.DB
+namespace DBLibrary.Entity
 {
     public class Task
     {

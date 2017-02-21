@@ -1,7 +1,6 @@
-﻿using Newtonsoft.Json;
-using Tasker.DB.EF;
+﻿using DBLibrary.Entity;
+using Newtonsoft.Json;
 using Tasker.Jobs;
-using Task = Tasker.DB.Task;
 
 namespace Tasker
 {

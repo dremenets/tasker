@@ -1,6 +1,7 @@
-﻿using System.Data.Entity;
+﻿using DBLibrary.Entity;
+using System.Data.Entity;
 
-namespace Tasker.DB.EF
+namespace DBLibrary.EF
 {
     class TaskerContext : DbContext
     {
