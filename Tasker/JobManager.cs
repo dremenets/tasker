@@ -20,23 +20,18 @@ namespace Tasker
             _timers = new Dictionary<int, Timer>();
         }
 
-        public void Init()
+        public void Init(Task task)
         {
-            var tasks = _repository.Get(x => x.ExpectedStart > DateTime.Now && x.Status == Status.None);
-            foreach (var task in tasks)
-            {
-                var job = JobFactory.CreateJob(task);
-                task.Status = Status.Scheduled;
-                _repository.Update(task);
+            var job = JobFactory.CreateJob(task);
+            task.Status = Status.Scheduled;
+            _repository.Update(task);
 
-                Log.Info($"Task with TaskId: {job.TaskId} is scheduled!");
+            Log.Info($"Task with TaskId: {job.TaskId} is scheduled!");
 
-                var interval = task.ExpectedStart.Subtract(DateTime.Now);
-                var timer = new Timer(interval.TotalMilliseconds) {AutoReset = false, Enabled = true};
-                timer.Elapsed += (sender, e) => RunJob(job);
-                _timers[task.Id] = timer;
-            }
-
+            var interval = task.ExpectedStart.Subtract(DateTime.Now);
+            var timer = new Timer(interval.TotalMilliseconds) { AutoReset = false, Enabled = true };
+            timer.Elapsed += (sender, e) => RunJob(job);
+            _timers[task.Id] = timer;
         }
 
         public List<int> GetScheduledTaskIds()

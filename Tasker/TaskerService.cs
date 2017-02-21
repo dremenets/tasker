@@ -1,6 +1,10 @@
 ﻿using DBLibrary;
 using DBLibrary.Entity;
 using DBLibrary.Entity.Enums;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using System.Text;
 using System.Timers;
 
 namespace Tasker
@@ -20,17 +24,33 @@ namespace Tasker
         public void Start()
         {
             Log.Info("Tasker Service is started!");
-
-            _jobManager.Init();
-
-            _timer = new Timer
+            var factory = new ConnectionFactory() { HostName = "localhost" };
+            using (var connection = factory.CreateConnection())
+            using (var channel = connection.CreateModel())
             {
-                AutoReset = true,
-                Enabled = true,
-                Interval = 5000
-            };
+                channel.QueueDeclare(queue: "tasker_queue",
+                                     durable: false,
+                                     exclusive: false,
+                                     autoDelete: false,
+                                     arguments: null);
 
-            _timer.Elapsed += (o, e) => _jobManager.Init();
+                channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+
+                var consumer = new EventingBasicConsumer(channel);
+                consumer.Received += (model, ea) =>
+                {
+                    var body = ea.Body;
+                    var message = Encoding.UTF8.GetString(body);
+                    _jobManager.Init(JsonConvert.DeserializeObject<Task>(message));
+                    channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                };
+
+                channel.BasicConsume(queue: "tasker_queue",
+                                     noAck: false,
+                                     consumer: consumer);
+
+                while (true) { }
+            }
         }
 
         public void Stop()

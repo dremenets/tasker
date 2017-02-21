@@ -5,6 +5,7 @@
         None = 0,
         Scheduled = 1,
         Completed = 2,
-        Failed = 3
+        Failed = 3,
+        Published = 4
     }
 }
