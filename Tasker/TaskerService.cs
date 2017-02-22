@@ -1,17 +1,16 @@
-﻿using DBLibrary;
+﻿using System.Configuration;
+using DBLibrary;
 using DBLibrary.Entity;
 using DBLibrary.Entity.Enums;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
-using System.Timers;
 
 namespace Tasker
 {
     public class TaskerService
     {
-        private Timer _timer;
         private readonly IGenericRepository<Task> _repository;
         private readonly IJobControl _jobManager;
 
@@ -24,15 +23,17 @@ namespace Tasker
         public void Start()
         {
             Log.Info("Tasker Service is started!");
-            var factory = new ConnectionFactory() { HostName = "localhost" };
+            var queueHost = ConfigurationManager.AppSettings["queue_host"];
+            var factory = new ConnectionFactory() {HostName = queueHost};
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                channel.QueueDeclare(queue: "tasker_queue",
-                                     durable: false,
-                                     exclusive: false,
-                                     autoDelete: false,
-                                     arguments: null);
+                var queueName = ConfigurationManager.AppSettings["queue_name"];
+                channel.QueueDeclare(queue: queueName,
+                    durable: false,
+                    exclusive: false,
+                    autoDelete: false,
+                    arguments: null);
 
                 channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
 
@@ -45,11 +46,13 @@ namespace Tasker
                     channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
                 };
 
-                channel.BasicConsume(queue: "tasker_queue",
-                                     noAck: false,
-                                     consumer: consumer);
+                channel.BasicConsume(queue: queueName,
+                    noAck: false,
+                    consumer: consumer);
 
-                while (true) { }
+                while (true)
+                {
+                }
             }
         }
 

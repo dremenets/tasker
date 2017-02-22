@@ -2,31 +2,33 @@
 using DBLibrary.Entity;
 using RabbitMQ.Client;
 using System;
+using System.Configuration;
 using System.Threading;
 
 namespace QueueSender
 {
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            var factory = new ConnectionFactory() { HostName = "localhost" };
+            var queueName = ConfigurationManager.AppSettings["queue_name"];
+            var factory = new ConnectionFactory() {HostName = "localhost"};
             using (var connection = factory.CreateConnection())
             {
                 using (var channel = connection.CreateModel())
                 {
-                    channel.QueueDeclare(queue: "tasker_queue",
-                                 durable: false,
-                                 exclusive: false,
-                                 autoDelete: false,
-                                 arguments: null);
+                    channel.QueueDeclare(queue: queueName,
+                        durable: false,
+                        exclusive: false,
+                        autoDelete: false,
+                        arguments: null);
 
                     Console.WriteLine("Queue was initialized");
 
                     while (true)
                     {
                         var sender = new Sender(new EFGenericRepository<Task>());
-                        sender.Send(channel);
+                        sender.Send(channel, queueName);
                         Thread.Sleep(10000);
                     }
                 }

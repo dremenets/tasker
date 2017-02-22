@@ -4,7 +4,6 @@ using DBLibrary.Entity.Enums;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System;
-using System.Linq;
 using System.Text;
 
 namespace QueueSender
@@ -18,10 +17,10 @@ namespace QueueSender
             _repository = repository;
         }
 
-        public void Send(IModel channel)
+        public void Send(IModel channel, string queueName)
         {
             var tasks = _repository.Get(x => x.ExpectedStart > DateTime.Now && x.Status == Status.None);
-            Console.WriteLine($"Published tasks {tasks.ToList().Count}");
+
             foreach (var task in tasks)
             {
                 var jsonTask = JsonConvert.SerializeObject(task);
@@ -33,9 +32,9 @@ namespace QueueSender
                 _repository.Update(task);
 
                 channel.BasicPublish(exchange: "",
-                                     routingKey: "tasker_queue",
-                                     basicProperties: properties,
-                                     body: body);
+                    routingKey: queueName,
+                    basicProperties: properties,
+                    body: body);
             }
         }
     }
